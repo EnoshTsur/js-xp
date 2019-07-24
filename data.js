@@ -101,6 +101,25 @@ function fs_api() {
     }
 
     /**
+     * Appending new Json
+     * @param {string} path 
+     */
+    function aJson(path) {
+        return content => {
+            const obj = rJson(path)
+            if (!obj) return jsonInfoError(path)(operations.APPEND, obj.error)
+            if(not(Array.isArray)(obj)) {
+                const withNewContent = [obj, content]
+                wJson(path)(withNewContent)
+                return withNewContent
+            } 
+            obj.push(content)
+            wJson(path)(obj)
+            return obj   
+        }
+    }
+
+    /**
      * Check out if attribute is in file
      * Returns true if it does
      * @param {string} path 
@@ -116,7 +135,7 @@ function fs_api() {
         }
     }
 
-    return { FILE_ATTRIBUTES, isFileContains, r, w, a, al, rJson, wJson, uJson }
+    return { isFileContains, r, w, a, al, rJson, wJson, uJson, aJson }
 }
 
 
@@ -132,26 +151,44 @@ function vocabularyIO() {
 
     // attributes
     const PATH = "vocabulary.dat"
-    const { wJson, isFileContains, } = fs_api()
+    const { wJson, isFileContains, aJson, } = fs_api()
 
     /**
-     * Closure id -> to 
+     * Closure id -> in order to generate auto increment id
      */
     function id() {
         let initId = 0
         return () => initId++
     }
 
+    // ID ++
     const increaseId = id()
 
+    /**
+     * Insert new word to vocabulary
+     * word = {
+     * id : uniq
+     * name : the actual word
+     * simliarWords: other words with the same meaning
+     * }
+     * @param {string} name 
+     */
     function insert(name) {
-        return (description, simliarWords) => {
-            if (isFileContains(PATH)(name)) {
-                return customError(`${name} already exists in vocabulary`)
-            }
+        return  simliarWords => {
+            
+            if (isFileContains(PATH)(name)) return name
+
+            const noDuplicate = Array.from(new Set(simliarWords))
+            console.log(noDuplicate)
+            noDuplicate.forEach(e => {
+                if (!isFileContains(PATH)(e)) {
+                    const withoutElement = noDuplicate.filter(element => element !== e)
+                    return insert(e)(withoutElement)
+                }
+            })
             const objId = increaseId()
-            const toInsert = { objId, name, description, simliarWords, }
-            return wJson(PATH)(toInsert)
+            const toInsert = { objId, name, simliarWords, }
+            return aJson(PATH)(toInsert)
         }
     }
 
@@ -160,6 +197,12 @@ function vocabularyIO() {
     }
 }
 
-module.exports = fs_api()
+const fsAPI = fs_api()
+const vocaAPI = vocabularyIO()
+
+module.exports = {
+    fsAPI,
+    vocaAPI,
+} 
 
 

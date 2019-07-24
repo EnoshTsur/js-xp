@@ -4,25 +4,14 @@ const rl = require('readline-sync')
 
 
 const str_utils = utils.string_utils()
-const { } = io
+const { vocaAPI, fsAPI } = io
 const { not, } = utils
 
 function singleWordHandler(word) {
-
-
-        
-
-        // console.log(`I dont know this word ${word}`)
-        // const like = rl.question(str_utils.withBackSlashN("Please write another word with the same meaning?"))
-        // console.log('Thanks')
-        // const description = rl.question(str_utils.withBackSlashN(`Please provide a simple description about ${word}`))
-        // io.w(`${word}.dat`)(JSON.stringify({ like, description }))
-        // io.al(vocabulary)(word)
-        // } else {
-        // const opinion = JSON.parse(io.r(`${word}.dat`)()).description
-        // console.log(`I think ${opinion}`)
-        // }
-    }
+    
+        vocaAPI.insert("enosh")(['human', 'human-been', 'adam'])
+       
+}
 
     let next = utils.string_utils().EMPTY_STRING
 

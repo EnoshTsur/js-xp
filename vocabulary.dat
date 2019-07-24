@@ -1,1 +1,1 @@
-{"name":"enosh","hobby":"dogs","cat":"yaniv"}
+[{},{"objId":0,"name":"adam","simliarWords":[]},{"objId":1,"name":"human-been","simliarWords":["adam"]},{"objId":2,"name":"human","simliarWords":["human-been","adam"]},{"objId":3,"name":"enosh","simliarWords":["human","human-been","adam"]}]
